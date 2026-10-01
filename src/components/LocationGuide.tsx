@@ -119,6 +119,45 @@ export function LocationGuide() {
               </a>
             </div>
 
+            {/* Social Media & Instant Channels */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <a
+                href={SHOP_INFO.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3.5 rounded-xl bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/40 text-blue-400 hover:text-white transition-all flex items-center justify-between group shadow-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#1877F2] text-white flex items-center justify-center shrink-0 shadow">
+                    <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white group-hover:text-blue-300">صفحة فيسبوك الرسمية</p>
+                    <p className="text-[10px] text-zinc-400 font-mono" dir="ltr">@osamamousa890</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold text-blue-400 group-hover:text-white">متابعة ←</span>
+              </a>
+
+              <a
+                href={SHOP_INFO.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3.5 rounded-xl bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 hover:text-white transition-all flex items-center justify-between group shadow-sm"
+              >
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#25D366] text-zinc-950 flex items-center justify-center shrink-0 shadow">
+                    <MessageSquare className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-white group-hover:text-emerald-300">محادثة واتساب مباشرة</p>
+                    <p className="text-[10px] text-emerald-400 font-mono font-bold" dir="ltr">{SHOP_INFO.whatsapp}</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold text-emerald-400 group-hover:text-white">محادثة ←</span>
+              </a>
+            </div>
+
           </div>
 
           {/* Map & Working Hours Card (6 cols) */}

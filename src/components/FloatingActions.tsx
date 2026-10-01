@@ -80,6 +80,20 @@ export function FloatingActions({ onOpenAddModal, onOpenLuckyWheel }: FloatingAc
           </span>
         </a>
 
+        {/* Facebook Page Button */}
+        <a
+          href={SHOP_INFO.facebookUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative flex items-center justify-center w-13 h-13 rounded-full bg-[#1877F2] hover:bg-blue-600 text-white shadow-xl shadow-blue-950/50 transition-all active:scale-95 border border-blue-400/40"
+          aria-label="صفحة فيسبوك أسامة موسى"
+        >
+          <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span className="absolute left-16 opacity-0 group-hover:opacity-100 bg-zinc-900 text-white text-xs font-bold py-1.5 px-3 rounded-lg border border-zinc-700 whitespace-nowrap shadow-xl transition-all pointer-events-none">
+            صفحتنا على فيسبوك
+          </span>
+        </a>
+
         <a
           href={SHOP_INFO.whatsappUrl}
           target="_blank"
@@ -89,7 +103,7 @@ export function FloatingActions({ onOpenAddModal, onOpenLuckyWheel }: FloatingAc
         >
           <MessageSquare className="w-6 h-6" />
           <span className="absolute left-16 opacity-0 group-hover:opacity-100 bg-zinc-900 text-white text-xs font-bold py-1.5 px-3 rounded-lg border border-zinc-700 whitespace-nowrap shadow-xl transition-all pointer-events-none">
-            محادثة واتساب سريعة
+            محادثة واتساب: {SHOP_INFO.whatsapp}
           </span>
         </a>
       </div>

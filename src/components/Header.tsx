@@ -41,19 +41,44 @@ export function Header({ onOpenAddModal, onOpenLuckyWheel, onOpenTradeIn }: Head
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px]">
+          <div className="flex items-center gap-2 sm:gap-3 text-[11px]">
             <span className="hidden lg:inline-flex items-center gap-1 font-medium text-zinc-900">
               <Clock className="w-3.5 h-3.5" />
               10:00 ص - 11:30 م
             </span>
 
+            {/* Facebook Page Link */}
+            <a
+              href={SHOP_INFO.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 font-bold bg-[#1877F2] hover:bg-blue-600 text-white px-2.5 py-0.5 rounded-full transition-colors shadow-sm text-[11px]"
+              title="صفحة فيسبوك أسامة موسى / سليم النور فون"
+            >
+              <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span>فيسبوك</span>
+            </a>
+
+            {/* WhatsApp Link with exact number */}
+            <a
+              href={SHOP_INFO.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 font-black bg-[#25D366] hover:bg-emerald-400 text-zinc-950 px-2.5 py-0.5 rounded-full transition-colors shadow-sm"
+              dir="ltr"
+              title="واتساب أسامة موسى (01003075071)"
+            >
+              <MessageSquare className="w-3 h-3" />
+              <span>01003075071</span>
+            </a>
+
             <a
               href={`tel:${SHOP_INFO.phone}`}
-              className="flex items-center gap-1 font-black bg-zinc-950 text-amber-400 px-2.5 py-0.5 rounded-full hover:bg-zinc-900 transition-colors shadow-sm"
+              className="hidden md:flex items-center gap-1 font-black bg-zinc-950 text-amber-400 px-2.5 py-0.5 rounded-full hover:bg-zinc-900 transition-colors shadow-sm"
               dir="ltr"
             >
               <Phone className="w-3 h-3 text-amber-400" />
-              {SHOP_INFO.phone}
+              <span>{SHOP_INFO.phone}</span>
             </a>
           </div>
         </div>
@@ -320,24 +345,34 @@ export function Header({ onOpenAddModal, onOpenLuckyWheel, onOpenTradeIn }: Head
             ))}
           </div>
 
-          {/* Contact Shortcuts */}
+          {/* Contact & Social Shortcuts */}
           <div className="pt-2 border-t border-zinc-800/80 flex flex-col gap-2">
             <a
-              href={`tel:${SHOP_INFO.phone}`}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 font-black text-xs"
+              href={SHOP_INFO.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1877F2] hover:bg-blue-600 text-white font-black text-xs transition-colors shadow-sm"
             >
-              <Phone className="w-3.5 h-3.5" />
-              <span>اتصال مباشر: {SHOP_INFO.phone}</span>
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span>صفحة فيسبوك أسامة موسى الرسمية</span>
             </a>
 
             <a
               href={SHOP_INFO.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#25D366] hover:bg-emerald-500 text-zinc-950 font-black text-xs transition-colors shadow-sm"
             >
-              <MessageSquare className="w-3.5 h-3.5" />
-              <span>تواصل واتساب مع أسامة موسى</span>
+              <MessageSquare className="w-4 h-4" />
+              <span>محادثة واتساب: {SHOP_INFO.whatsapp}</span>
+            </a>
+
+            <a
+              href={`tel:${SHOP_INFO.phone}`}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 font-black text-xs hover:bg-zinc-850"
+            >
+              <Phone className="w-3.5 h-3.5" />
+              <span>اتصال هاتفي مباشر: {SHOP_INFO.phone}</span>
             </a>
           </div>
 

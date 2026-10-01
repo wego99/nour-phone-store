@@ -90,7 +90,10 @@ export const SHOP_INFO = {
   phone: '01003075071',
   phoneRaw: '01003075071',
   phoneInternational: '+201003075071',
+  whatsapp: '01003075071',
   whatsappUrl: 'https://wa.me/201003075071',
+  facebookUrl: 'https://www.facebook.com/osamamousa890',
+  facebookHandle: 'osamamousa890',
   address: {
     governorate: 'الدقهلية',
     city: 'مدينة الكردي',

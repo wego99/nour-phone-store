@@ -18,7 +18,6 @@ import { AddProductModal } from './components/AddProductModal';
 import { AuthModal } from './components/AuthModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { LuckyWheelModal } from './components/LuckyWheelModal';
-import { InstallmentCalculatorSection } from './components/InstallmentCalculatorSection';
 import { TradeInCalculatorModal } from './components/TradeInCalculatorModal';
 import { GoldenWarrantySection } from './components/GoldenWarrantySection';
 import { ShieldCheck, Clock, Award, Lock } from 'lucide-react';
@@ -135,11 +134,6 @@ export default function App() {
   const handleOpenTradeInForProduct = (name: string, price: number) => {
     setTradeInTarget({ name, price });
     setIsTradeInOpen(true);
-  };
-
-  const handleOpenInstallmentForProduct = () => {
-    const el = document.getElementById('installment-calculator');
-    el?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
