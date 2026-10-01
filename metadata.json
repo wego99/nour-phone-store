@@ -1,0 +1,6 @@
+{
+  "name": "سليم النور فون لخدمات المحمول",
+  "description": "سليم النور فون بمدينة الكردي - بيع وصيانة الهواتف الذكية كاش وتقسيط، إكسسوارات أصلية، تغيير شاشات وسوفت وير تحت إدارة أسامة موسى.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
