@@ -23,7 +23,7 @@ export function Footer() {
             </div>
 
             <p className="text-xs leading-relaxed text-zinc-400 max-w-md">
-              المركز المتخصص لبيع وصيانة الهواتف الذكية (جديد ومستعمل بالضمان كاش وبتقسيط ميسر)، تركيب الشاشات والباغات بأعلى جودة، الإكسسوارات الأصلية ومبردات الهواتف، وخدمات السوفت وير والمدفوعات الإلكترونية بمدينة الكردي.
+              المركز المتخصص لبيع الهواتف الذكية الجديدة بالضمان الرسمي (كاش وبتقسيط ميسر)، سداد جميع ضرائب الأجهزة لدى الجهاز القومي لتنظيم الاتصالات (NTRA)، دفع الفواتير وشحن الرصيد والمحافظ الإلكترونية، والإكسسوارات وسماعات الجيمنج والإيربودز الأصلية بمدينة الكردي.
             </p>
 
             <div className="inline-flex items-center gap-2 p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-semibold text-zinc-200">
@@ -40,17 +40,22 @@ export function Footer() {
             <ul className="space-y-2 text-xs">
               <li>
                 <a href="#services" className="hover:text-amber-400 transition-colors">
-                  بيع الهواتف (كاش وتقسيط)
+                  بيع الهواتف الجديدة (كاش وتقسيط)
                 </a>
               </li>
               <li>
-                <a href="#repair-estimator" className="hover:text-amber-400 transition-colors">
-                  تركيب شاشات وباغات أصلية
+                <a href="#services" className="hover:text-amber-400 transition-colors">
+                  سداد ضريبة أجهزة NTRA
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-amber-400 transition-colors">
+                  دفع الفواتير وشحن الرصيد
                 </a>
               </li>
               <li>
                 <a href="#catalog" className="hover:text-amber-400 transition-colors">
-                  الإكسسوارات والشواحن والمبردات
+                  الإكسسوارات وسماعات الجيمنج والإيربودز
                 </a>
               </li>
               <li>

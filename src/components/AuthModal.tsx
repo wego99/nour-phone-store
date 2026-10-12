@@ -259,13 +259,13 @@ export function AuthModal() {
               {/* Phone or Email Input */}
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-zinc-200 flex items-center justify-between">
-                  <span>رقم الهاتف أو البريد الإلكتروني: *</span>
-                  <span className="text-[11px] text-amber-400 font-normal">01xxxxxxxxx</span>
+                  <span>اسم المستخدم أو رقم الهاتف أو الإيميل: *</span>
+                  <span className="text-[11px] text-amber-400 font-normal">admin أو 01003075071</span>
                 </label>
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="أدخل رقم هاتفك (مثال: 01003075071)"
+                    placeholder="اسم المستخدم (admin) أو رقم الهاتف"
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
                     className="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl pr-10 pl-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition-all"
@@ -278,7 +278,10 @@ export function AuthModal() {
               {/* Password Input with Show/Hide */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-zinc-200">كلمة المرور: *</label>
+                  <label className="text-xs font-bold text-zinc-200 flex items-center gap-1.5">
+                    <span>كلمة المرور: *</span>
+                    <span className="text-[10px] text-zinc-400">(لحساب الإدارة: admin99)</span>
+                  </label>
                   <button
                     type="button"
                     onClick={() => setCurrentTab('forgot')}
@@ -290,7 +293,7 @@ export function AuthModal() {
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="أدخل كلمة المرور"
+                    placeholder="أدخل كلمة المرور (admin99 لحساب الإدارة)"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     className="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-400 focus:ring-1 focus:ring-amber-400 rounded-xl pr-10 pl-10 py-3 text-sm text-zinc-100 placeholder-zinc-500 outline-none transition-all"
@@ -363,8 +366,8 @@ export function AuthModal() {
                         <Crown className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-white group-hover:text-amber-300">أسامة موسى</p>
-                        <p className="text-[10px] text-amber-400">مدير المحل (صلاحيات كاملة)</p>
+                        <p className="text-xs font-bold text-white group-hover:text-amber-300">حساب المالك (أسامة موسى)</p>
+                        <p className="text-[10px] text-amber-400 font-mono">admin / admin99</p>
                       </div>
                     </div>
                     <span className="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded-full font-bold">

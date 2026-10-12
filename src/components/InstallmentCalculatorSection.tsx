@@ -63,7 +63,7 @@ const PROVIDERS: InstallmentPlan[] = [
 // Presets for quick calculation
 const PRESET_PHONES = [
   { name: 'آيفون 15 برو ماكس (256 جيجا)', price: 54500 },
-  { name: 'آيفون 13 عادي كسر زيرو (128 جيجا)', price: 23500 },
+  { name: 'آيفون 13 عادي جديد بالضمان (128 جيجا)', price: 27500 },
   { name: 'سامسونج Galaxy S24 Ultra', price: 47900 },
   { name: 'سامسونج Galaxy A55 5G', price: 16800 },
   { name: 'شاومي Redmi Note 13 Pro', price: 11900 },

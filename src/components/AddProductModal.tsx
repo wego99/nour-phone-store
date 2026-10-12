@@ -14,10 +14,11 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
   const isOwner = currentUser?.role === 'admin';
 
   const [name, setName] = useState('');
-  const [category, setCategory] = useState<'new_phones' | 'used_phones' | 'accessories' | 'screens_parts'>('new_phones');
+  const [category, setCategory] = useState<'new_phones' | 'accessories'>('new_phones');
   const [brand, setBrand] = useState('apple');
+  const [accessoryType, setAccessoryType] = useState<'airpods' | 'gaming' | 'chargers' | 'coolers' | 'powerbanks'>('airpods');
   const [price, setPrice] = useState<string>('');
-  const [condition, setCondition] = useState<'جديد بالضمان' | 'كسر زيرو فحص كامل' | 'أصلي 100%' | 'جودة فائقة'>('جديد بالضمان');
+  const [condition, setCondition] = useState<'جديد بالضمان' | 'أصلي 100%' | 'جودة فائقة'>('جديد بالضمان');
   const [highlight, setHighlight] = useState('وصل حديثاً');
   const [description, setDescription] = useState('');
   
@@ -133,10 +134,8 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
     }
 
     const categoryLabels: Record<string, string> = {
-      new_phones: 'تلفونات جديدة',
-      used_phones: 'تلفونات كسر زيرو',
-      accessories: 'إكسسوارات ومستلزمات',
-      screens_parts: 'شاشات وصيانة'
+      new_phones: '📱 تلفونات جديدة بالضمان',
+      accessories: '🎧 إكسسوارات وسماعات ومستلزمات'
     };
 
     const featuresList = [feature1.trim(), feature2.trim(), feature3.trim()].filter(Boolean);
@@ -148,8 +147,8 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
       id: 'custom-' + Date.now(),
       name: name.trim(),
       category,
-      categoryLabel: categoryLabels[category],
-      brand: (category === 'new_phones' || category === 'used_phones') ? brand : undefined,
+      categoryLabel: category === 'new_phones' ? 'تلفونات جديدة' : 'إكسسوارات ومستلزمات',
+      brand: category === 'new_phones' ? brand : undefined,
       price: numPrice,
       priceFormatted: `${numPrice.toLocaleString()} ج.م`,
       imageUrl: images[0],
@@ -165,6 +164,150 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
     onAddProduct(newProduct);
     onClose();
   };
+
+  const applyPhonePreset = (preset: {
+    name: string;
+    brand: string;
+    price: string;
+    condition: 'جديد بالضمان' | 'أصلي 100%' | 'جودة فائقة';
+    highlight: string;
+    features: string[];
+    desc: string;
+    imageUrl: string;
+  }) => {
+    setName(preset.name);
+    setBrand(preset.brand);
+    setPrice(preset.price);
+    setCondition(preset.condition);
+    setHighlight(preset.highlight);
+    setDescription(preset.desc);
+    setFeature1(preset.features[0] || '');
+    setFeature2(preset.features[1] || '');
+    setFeature3(preset.features[2] || '');
+    setImages([preset.imageUrl]);
+    setError('');
+  };
+
+  const applyAccessoryPreset = (preset: {
+    name: string;
+    price: string;
+    condition: 'جديد بالضمان' | 'أصلي 100%' | 'جودة فائقة';
+    highlight: string;
+    features: string[];
+    desc: string;
+    imageUrl: string;
+  }) => {
+    setName(preset.name);
+    setPrice(preset.price);
+    setCondition(preset.condition);
+    setHighlight(preset.highlight);
+    setDescription(preset.desc);
+    setFeature1(preset.features[0] || '');
+    setFeature2(preset.features[1] || '');
+    setFeature3(preset.features[2] || '');
+    setImages([preset.imageUrl]);
+    setError('');
+  };
+
+  const PHONE_PRESETS = [
+    {
+      name: 'آيفون 16 برو ماكس (iPhone 16 Pro Max 256GB)',
+      brand: 'apple',
+      price: '54500',
+      condition: 'جديد بالضمان' as const,
+      highlight: 'الأحدث عالمياً 🍎',
+      features: ['معالج A18 Pro الجبار', 'كاميرات 48MP بريسكوب 5x', 'ضمان محلي ودولي رسمي'],
+      desc: 'أحدث هواتف آبل بتصميم التيتانيوم فائق المتانة مع معالج A18 Pro ونظام كاميرات احترافي. جديد تماماً بتغليف المصنع الأصلي مع ضمان رسمي.',
+      imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'سامسونج جلاكسي إس 24 ألترا (Galaxy S24 Ultra)',
+      brand: 'samsung',
+      price: '47900',
+      condition: 'جديد بالضمان' as const,
+      highlight: 'وحش الذكاء الاصطناعي ⚡',
+      features: ['شاشة 120Hz مسطحة بالكامل', 'قلم S-Pen مدمج وكاميرا 200MP', 'ضمان سامسونج مصر'],
+      desc: 'الهاتف الأقوى بنظام أندرويد مع مزايا Galaxy AI المتقدمة وشاشة مسطحة بدقة QHD+ وكاميرا 200 ميجابكسل تدعم الذكاء الاصطناعي.',
+      imageUrl: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'شاومي ريدمي نوت 13 برو (Redmi Note 13 Pro 5G)',
+      brand: 'xiaomi',
+      price: '13500',
+      condition: 'جديد بالضمان' as const,
+      highlight: 'أفضل قيمة مقابل سعر 🏆',
+      features: ['كاميرا 200MP بمثبت بصري', 'شاحن توربو 67W سريع', 'ضمان الوكيل المعتمد'],
+      desc: 'الهاتف الأقوى في فئته السعرية بكاميرا رئيسية دقتها 200 ميجابكسل مع مثبت بصري OIS، وشاشة AMOLED وشاحن سريع 67W.',
+      imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'ريلمي 12 برو بلس (Realme 12 Pro+ 5G)',
+      brand: 'realme',
+      price: '17200',
+      condition: 'جديد بالضمان' as const,
+      highlight: 'كاميرا بريسكوب خارقة 📸',
+      features: ['تقريب بصري حتى 120x', 'شاشة منحنية 120Hz', 'ضمان ريلمي الرسمي'],
+      desc: 'تصميم فخم مستوحى من الساعات السويسرية، كاميرا بريسكوب للتقريب البصري مع شحن سريع 67W SuperVOOC.',
+      imageUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=700&q=80'
+    }
+  ];
+
+  const ACCESSORY_PRESETS = [
+    {
+      name: 'سماعات إيربودز برو الجيل الثاني ANC الأصلية بعزل الضوضاء',
+      price: '950',
+      condition: 'أصلي 100%' as const,
+      highlight: 'عزل ضوضاء فائق 🎧',
+      features: ['عزل نشط للضوضاء ANC', 'بطارية حتى 30 ساعة', 'متوافقة مع الآيفون والأندرويد'],
+      desc: 'أعلى نقاء صوتي مع تقنية العزل النشط للضوضاء المحيطة (ANC) وشفافية الصوت، ميكروفونات بدقة فائقة للمكالمات الواضحة في الزحام.',
+      imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'سماعة رأس جيمنج احترافية ريدراجون زيوس (Redragon H510 Zeus 7.1)',
+      price: '1450',
+      condition: 'أصلي 100%' as const,
+      highlight: 'صوت محيطي 7.1 للألعاب 🎮',
+      features: ['كارت صوت خارجي 7.1', 'مشغلات 53mm لتحديد الأقدام', 'ميكروفون نقي قابل للإزالة'],
+      desc: 'سماعة رأس احترافية لعشاق ألعاب ببجي وفري فاير وكول أوف ديوتي بصوت محيطي مجسم 7.1 لتحديد أماكن الأقدام بدقة فائقة.',
+      imageUrl: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'سماعات إيربودز أنكر ساوند كور R50i أصلية مع بيز جبار',
+      price: '850',
+      condition: 'أصلي 100%' as const,
+      highlight: 'أنكر الأصلية ⚡',
+      features: ['تقنية BassUp مضخمة للبيز', 'بطارية 30 ساعة وشحن سريع', 'مقاومة الماء IPX5'],
+      desc: 'سماعة أنكر الأصلية بمضخم بيز جبار مع مشغلات 10 ملم، ميكروفونين ذكاء اصطناعي لمكالمات واضحة، وبطارية 30 ساعة.',
+      imageUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'سماعات جيمنج أونيكوما RGB احترافية للألعاب والكمبيوتر',
+      price: '980',
+      condition: 'أصلي 100%' as const,
+      highlight: 'إضاءات RGB ساحرة ✨',
+      features: ['صوت محيطي ستيريو نقي', 'إضاءات RGB ملونة', 'ميكروفون 360 درجة'],
+      desc: 'سماعة رأس متخصصة للألعاب والستريم والبث المباشر بإضاءات RGB متعددة الألوان، صوت ستيريو مجسم عميق ومضخم.',
+      imageUrl: 'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'مبرد هواتف مغناطيسي ثلجي للجيمنج (Peltier RGB Cooler)',
+      price: '650',
+      condition: 'أصلي 100%' as const,
+      highlight: 'يمنع اللاج والسخونة ❄️',
+      features: ['تبريد ثلجي فوري 15 درجة', 'إضاءات RGB ومشبك ومغناطيس', 'صوت هادئ جداً بدون ضجيج'],
+      desc: 'مروحة تبريد ثلجية بنظام أشباه الموصلات لتخفيض حرارة الهاتف فوراً لأكثر من 15 درجة مئوية ومنع هبوط الفريمات في ببجي.',
+      imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=700&q=80'
+    },
+    {
+      name: 'شاحن GaN سريع معتمد 65W مع كابل قماشي مصفح',
+      price: '750',
+      condition: 'أصلي 100%' as const,
+      highlight: 'شحن فائق السرعة 🔌',
+      features: ['تقنية شحن آمن GaN', 'حماية بطارية الهاتف من الحرارة', 'كابل قماشي مضاد للقطع'],
+      desc: 'شواحن بتقنية GaN المتطورة التي تمنع ارتفاع حرارة الشاحن والهاتف وتوفر سرعة شحن مضاعفة مع حماية ذكية للبطارية.',
+      imageUrl: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=700&q=80'
+    }
+  ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-sm">
@@ -201,38 +344,33 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
             </div>
           )}
 
-          {/* 1. Category */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-200">1. تصنيف المنتج / القائمة:</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {/* 1. Category Selection (الهاتف أو الإكسسوارات) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-zinc-200">1. اختر نوع وقائمة المنتج المراد إضافته: *</label>
+              <span className="text-[11px] text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
+                سهل للاختيار السريع ⚡
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => {
                   setCategory('new_phones');
                   setCondition('جديد بالضمان');
                 }}
-                className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all text-center ${
+                className={`py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-black border transition-all text-center flex items-center justify-center gap-2.5 cursor-pointer ${
                   category === 'new_phones'
-                    ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md'
-                    : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
+                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-xl shadow-amber-500/30 ring-2 ring-amber-300'
+                    : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-amber-500/40'
                 }`}
               >
-                📱 تلفونات جديدة
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setCategory('used_phones');
-                  setCondition('كسر زيرو فحص كامل');
-                }}
-                className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all text-center ${
-                  category === 'used_phones'
-                    ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md'
-                    : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
-                }`}
-              >
-                🔄 تلفونات كسر زيرو
+                <Smartphone className="w-5 h-5" />
+                <div className="text-right">
+                  <p className="leading-tight">📱 هاتف ذكي جديد</p>
+                  <p className="text-[10px] font-normal opacity-80">هواتف كاش وبالتقسيط بالضمان الرسمي</p>
+                </div>
               </button>
 
               <button
@@ -241,39 +379,83 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
                   setCategory('accessories');
                   setCondition('أصلي 100%');
                 }}
-                className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all text-center ${
+                className={`py-3.5 px-4 rounded-2xl text-xs sm:text-sm font-black border transition-all text-center flex items-center justify-center gap-2.5 cursor-pointer ${
                   category === 'accessories'
-                    ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md'
-                    : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
+                    ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-xl shadow-amber-500/30 ring-2 ring-amber-300'
+                    : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-amber-500/40'
                 }`}
               >
-                🎧 إكسسوارات ومبردات
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setCategory('screens_parts');
-                  setCondition('جودة فائقة');
-                }}
-                className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all text-center ${
-                  category === 'screens_parts'
-                    ? 'bg-amber-500 text-zinc-950 border-amber-400 font-black shadow-md'
-                    : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
-                }`}
-              >
-                🛠️ شاشات وصيانة
+                <Sparkles className="w-5 h-5" />
+                <div className="text-right">
+                  <p className="leading-tight">🎧 إكسسوارات وسماعات جيمنج وإيربودز</p>
+                  <p className="text-[10px] font-normal opacity-80">إيربودز، سماعات جيمنج، شواحن، مبردات ثلجية</p>
+                </div>
               </button>
             </div>
           </div>
 
-          {/* 1.1 Phone Brand Selection (يظهر عند اختيار تلفونات جديدة أو مستعملة) */}
-          {(category === 'new_phones' || category === 'used_phones') && (
+          {/* Quick-Pick Templates Box (سهل للاختيار) */}
+          <div className="p-4 rounded-2xl bg-zinc-950/90 border border-amber-500/30 space-y-3 animate-in fade-in">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black text-amber-400 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>قوالب سريعة جاهزة للاختيار بضغطة واحدة (تعبئة فورية):</span>
+              </span>
+              <span className="text-[10px] text-zinc-400">اضغط لملء البيانات والصور تلقائياً</span>
+            </div>
+
+            {category === 'new_phones' ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {PHONE_PRESETS.map((p, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => applyPhonePreset(p)}
+                    className="p-2.5 rounded-xl bg-zinc-900 hover:bg-amber-500/15 border border-zinc-800 hover:border-amber-400 text-right transition-all flex items-center justify-between gap-2 cursor-pointer group"
+                  >
+                    <div>
+                      <p className="text-xs font-bold text-white group-hover:text-amber-300 truncate">
+                        {p.name.split('(')[0]}
+                      </p>
+                      <span className="text-[10px] text-amber-400 font-mono">{p.price} ج.م</span>
+                    </div>
+                    <span className="text-[10px] bg-amber-500 text-zinc-950 font-black px-2 py-0.5 rounded-lg shrink-0">
+                      اختيار سريع 👈
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {ACCESSORY_PRESETS.map((p, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => applyAccessoryPreset(p)}
+                    className="p-2.5 rounded-xl bg-zinc-900 hover:bg-amber-500/15 border border-zinc-800 hover:border-amber-400 text-right transition-all flex items-center justify-between gap-2 cursor-pointer group"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-white group-hover:text-amber-300 truncate">
+                        {p.name}
+                      </p>
+                      <span className="text-[10px] text-amber-400 font-mono">{p.price} ج.م</span>
+                    </div>
+                    <span className="text-[10px] bg-amber-500 text-zinc-950 font-black px-2 py-0.5 rounded-lg shrink-0">
+                      تعبئة 👈
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 1.1 Phone Brand Selection (يظهر فقط عند اختيار تلفونات جديدة) */}
+          {category === 'new_phones' && (
             <div className="space-y-2 p-3.5 rounded-xl bg-zinc-950/80 border border-amber-500/30 animate-in fade-in duration-200">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
                   <Smartphone className="w-3.5 h-3.5" />
-                  <span>اختر الشركة المصنعة للهاتف (ماركة الهاتف): *</span>
+                  <span>اختر ماركة الهاتف (الشركة المصنعة): *</span>
                 </label>
                 <span className="text-[11px] text-zinc-400">لتصنيفه بدقة في خانة الماركات</span>
               </div>
@@ -488,10 +670,9 @@ export function AddProductModal({ isOpen, onClose, onAddProduct }: AddProductMod
                 onChange={(e) => setCondition(e.target.value as any)}
                 className="w-full bg-zinc-950 border border-zinc-800 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-zinc-100 outline-none cursor-pointer"
               >
-                <option value="جديد بالضمان">جديد بالضمان الرسمي</option>
-                <option value="كسر زيرو فحص كامل">كسر زيرو فحص كامل وضمان تجربة</option>
+                <option value="جديد بالضمان">جديد بالضمان الرسمي المعتمد</option>
                 <option value="أصلي 100%">أصلي 100% معتمد</option>
-                <option value="جودة فائقة">جودة فائقة وضمان كتابي</option>
+                <option value="جودة فائقة">جودة فائقة وفحص كامل</option>
               </select>
             </div>
 

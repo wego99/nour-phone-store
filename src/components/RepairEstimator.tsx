@@ -48,14 +48,14 @@ export function RepairEstimator({ onSelectBrandAndGoToCatalog }: RepairEstimator
         {/* Section Heading */}
         <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-            <Wrench className="w-3.5 h-3.5" />
-            <span>حاسبة واستعلام الصيانة الفورية</span>
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>خدمات NTRA والمدفوعات والصيانة</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-white">
-            فحص جهازك وتقدير وقت الصيانة
+            استعلام ضريبة NTRA، دفع الفواتير، وخدمات الأجهزة
           </h2>
           <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-            حدد نوع جهازك والعطل المطلوب لمعرفة مدة الصيانة والضمان الممنوح، وحجز دورك مباشرة مع فنيي محل سليم النور فون بالكردي.
+            حدد نوع جهازك والخدمة المطلوبة لمعرفة التفاصيل الرسمية، سداد ضريبة الجهاز القومي للاتصالات، دفع الفواتير، وحجز دورك مباشرة مع أ. أسامة موسى.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export function RepairEstimator({ onSelectBrandAndGoToCatalog }: RepairEstimator
                       هل تريد شراء أو حجز هاتف <strong className="text-amber-400">{currentBrandObj.name}</strong>؟
                     </p>
                     <p className="text-[11px] text-zinc-400">
-                      متوفر لدينا جديد ومستعمل بالأسعار والضمان مع فحص كامل بمدينة الكردي
+                      متوفر لدينا هواتف جديدة بالكرتونة والضمان الرسمي كاش وتقسيط بمدينة الكردي
                     </p>
                   </div>
                 </div>

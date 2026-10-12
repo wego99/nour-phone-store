@@ -24,7 +24,7 @@ import { GoldenWarrantySection } from './components/GoldenWarrantySection';
 import { ShieldCheck, Clock, Award, Lock } from 'lucide-react';
 import { SHOP_INFO, PRODUCTS_CATALOG, ProductItem, PHONE_BRANDS } from './data/shopData';
 
-const STORAGE_KEY = 'selim_nour_phone_products_catalog_v3';
+const STORAGE_KEY = 'selim_nour_phone_products_catalog_v4';
 
 export default function App() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);

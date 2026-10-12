@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Phone, MessageSquare, Menu, X, Shield, Smartphone, Clock, User, Crown, LogIn, ChevronDown, RotateCw, ChevronLeft, Gift } from 'lucide-react';
+import { Phone, MessageSquare, Menu, X, Shield, Smartphone, Clock, User, Crown, LogIn, ChevronDown, RotateCw, ChevronLeft, Gift, LogOut } from 'lucide-react';
 import { SHOP_INFO } from '../data/shopData';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,14 +11,14 @@ interface HeaderProps {
 
 export function Header({ onOpenAddModal, onOpenLuckyWheel, onOpenTradeIn }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { currentUser, openLogin, openProfile } = useAuth();
+  const { currentUser, openLogin, openProfile, logout } = useAuth();
 
   const navLinks = [
     { label: 'الرئيسية', href: '#hero' },
     { label: 'المعرض والأجهزة', href: '#catalog' },
     { label: 'حاسبة التقسيط 💳', href: '#installment-calculator' },
     { label: 'استبدال هاتفك 🔄', href: '#trade-in', isTradeIn: true },
-    { label: 'تكلفة الصيانة', href: '#repair-estimator' },
+    { label: 'سداد NTRA وفواتير 📋', href: '#services' },
     { label: 'الضمان الذهبي 🛡️', href: '#warranty' },
     { label: 'عجلة الحظ 🎡', href: '#lucky-wheel', isWheel: true },
     { label: 'الموقع وساعات العمل', href: '#location' },
@@ -152,35 +152,48 @@ export function Header({ onOpenAddModal, onOpenLuckyWheel, onOpenTradeIn }: Head
           </nav>
 
           {/* Left Side: ONE SINGLE UNIFIED BOX FOR LOGIN & SIGN UP */}
-          <div className="hidden lg:flex items-center">
+          <div className="hidden lg:flex items-center gap-2">
             {currentUser ? (
-              /* User Logged In Pill */
-              <button
-                type="button"
-                onClick={openProfile}
-                className="px-4 py-2.5 rounded-2xl bg-zinc-900 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-white font-bold text-xs sm:text-sm shadow-lg transition-all flex items-center gap-3 cursor-pointer group"
-                title="اضغط لفتح الملف الشخصي وتتبع الصيانة ونقاط الولاء"
-              >
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black shrink-0">
-                  {currentUser.role === 'admin' ? <Crown className="w-4 h-4" /> : <User className="w-4 h-4" />}
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs sm:text-sm font-black text-white group-hover:text-amber-300 transition-colors">
-                      {currentUser.name}
-                    </span>
-                    <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
-                      currentUser.role === 'admin' ? 'bg-amber-400 text-zinc-950 font-black' : 'bg-emerald-500/20 text-emerald-300'
-                    }`}>
-                      {currentUser.role === 'admin' ? 'الإدارة' : 'عميل'}
-                    </span>
+              <div className="flex items-center gap-2">
+                {/* User Logged In Pill */}
+                <button
+                  type="button"
+                  onClick={openProfile}
+                  className="px-4 py-2.5 rounded-2xl bg-zinc-900 hover:bg-zinc-850 border border-amber-500/40 hover:border-amber-400 text-white font-bold text-xs sm:text-sm shadow-lg transition-all flex items-center gap-3 cursor-pointer group"
+                  title="اضغط لفتح الملف الشخصي وتتبع الصيانة ونقاط الولاء"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black shrink-0">
+                    {currentUser.role === 'admin' ? <Crown className="w-4 h-4" /> : <User className="w-4 h-4" />}
                   </div>
-                  <p className="text-[11px] text-zinc-400 font-normal">
-                    {currentUser.role === 'admin' ? 'لوحة التحكم والصلاحيات' : `رصيدك: ${currentUser.loyaltyPoints || 0} نقطة ولاء`}
-                  </p>
-                </div>
-                <ChevronDown className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 transition-colors mr-1" />
-              </button>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs sm:text-sm font-black text-white group-hover:text-amber-300 transition-colors">
+                        {currentUser.name}
+                      </span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+                        currentUser.role === 'admin' ? 'bg-amber-400 text-zinc-950 font-black' : 'bg-emerald-500/20 text-emerald-300'
+                      }`}>
+                        {currentUser.role === 'admin' ? 'الإدارة 👑' : 'عميل'}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-zinc-400 font-normal">
+                      {currentUser.role === 'admin' ? 'لوحة التحكم والصلاحيات' : `رصيدك: ${currentUser.loyaltyPoints || 0} نقطة ولاء`}
+                    </p>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-zinc-500 group-hover:text-amber-400 transition-colors mr-1" />
+                </button>
+
+                {/* Direct Logout Button */}
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="px-3.5 py-2.5 rounded-2xl bg-zinc-900 hover:bg-rose-950/90 border border-zinc-800 hover:border-rose-600 text-zinc-300 hover:text-rose-200 transition-all flex items-center gap-2 text-xs font-black cursor-pointer shadow-md group"
+                  title="تسجيل الخروج من الحساب"
+                >
+                  <LogOut className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
+                  <span>تسجيل خروج</span>
+                </button>
+              </div>
             ) : (
               /* Single Unified Box for Login and Create Account */
               <button
@@ -200,14 +213,26 @@ export function Header({ onOpenAddModal, onOpenLuckyWheel, onOpenTradeIn }: Head
           {/* Mobile Right Controls: Single Auth Button + Menu Toggle */}
           <div className="flex items-center gap-2 lg:hidden">
             {currentUser ? (
-              <button
-                type="button"
-                onClick={openProfile}
-                className="px-3 py-1.5 rounded-xl bg-zinc-900 border border-amber-500/40 text-amber-400 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
-              >
-                {currentUser.role === 'admin' ? <Crown className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
-                <span className="max-w-[75px] truncate">{currentUser.name.split(' ')[0]}</span>
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={openProfile}
+                  className="px-2.5 py-1.5 rounded-xl bg-zinc-900 border border-amber-500/40 text-amber-400 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                  title="الملف الشخصي"
+                >
+                  {currentUser.role === 'admin' ? <Crown className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
+                  <span className="max-w-[70px] truncate">{currentUser.name.split(' ')[0]}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="px-2 py-1.5 rounded-xl bg-rose-950/70 hover:bg-rose-900 border border-rose-800/80 text-rose-300 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                  title="تسجيل الخروج من الحساب"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="text-[10px]">خروج</span>
+                </button>
+              </div>
             ) : (
               <button
                 type="button"
@@ -251,16 +276,30 @@ export function Header({ onOpenAddModal, onOpenLuckyWheel, onOpenTradeIn }: Head
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openProfile();
-                }}
-                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black transition-colors cursor-pointer"
-              >
-                الملف الشخصي
-              </button>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openProfile();
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-black transition-colors cursor-pointer"
+                >
+                  حسابي
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="px-2.5 py-1.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-700/80 text-rose-200 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+                  title="تسجيل الخروج من الحساب"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>خروج</span>
+                </button>
+              </div>
             </div>
           ) : (
             <button

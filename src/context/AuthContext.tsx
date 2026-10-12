@@ -14,6 +14,7 @@ export interface UserAccount {
   id: string;
   name: string;
   phone: string;
+  username?: string;
   email?: string;
   city?: string;
   role: 'admin' | 'customer';
@@ -28,12 +29,13 @@ export interface UserAccount {
 export const SEED_USERS: UserAccount[] = [
   {
     id: 'user-admin',
-    name: 'أسامة موسى',
+    name: 'أ. أسامة موسى (صاحب المحل)',
+    username: 'admin',
     phone: '01003075071',
-    email: 'osama@elnourphone.com',
+    email: 'admin@nourphone.com',
     city: 'مدينة الكردي - ميدان المحطة',
     role: 'admin',
-    password: '123',
+    password: 'admin99',
     createdAt: '2024-01-01',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     loyaltyPoints: 1250,
@@ -53,6 +55,7 @@ export const SEED_USERS: UserAccount[] = [
   {
     id: 'user-customer',
     name: 'أحمد السعيد',
+    username: 'customer',
     phone: '01012345678',
     email: 'ahmed.said@gmail.com',
     city: 'مدينة الكردي',
@@ -124,7 +127,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map((u: UserAccount) => 
+            u.role === 'admin' ? { ...u, username: 'admin', password: 'admin99' } : u
+          );
         }
       }
     } catch (e) {
@@ -137,7 +142,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const saved = localStorage.getItem(CURRENT_USER_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.role === 'admin') {
+          return { ...parsed, username: 'admin', password: 'admin99' };
+        }
+        return parsed;
       }
     } catch (e) {
       console.error('Error loading current user', e);
@@ -198,18 +207,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const cleanIdentifier = phoneOrEmail.trim().toLowerCase();
     const cleanPass = pass.trim();
 
+    // 1. Direct Master Admin check (username "admin" and password "admin99")
+    if (cleanIdentifier === 'admin' || cleanIdentifier === '01003075071' || cleanIdentifier === 'admin@nourphone.com') {
+      if (cleanPass === 'admin99') {
+        const adminUser = users.find((u) => u.role === 'admin') || SEED_USERS[0];
+        const updatedAdmin = { ...adminUser, username: 'admin', password: 'admin99', role: 'admin' as const };
+        setCurrentUser(updatedAdmin);
+        setIsAuthModalOpen(false);
+        return { success: true, message: 'مرحباً بك يا مدير المحل (أ. أسامة موسى) - تم تفعيل لوحة تحكم وتعديل المعرض بالكامل!' };
+      } else {
+        return { success: false, message: 'كلمة المرور لحساب المالك غير صحيحة. كلمة السر هي: admin99' };
+      }
+    }
+
+    // 2. Normal user search
     const found = users.find(
       (u) =>
+        (u.username && u.username.toLowerCase() === cleanIdentifier) ||
         u.phone.replace(/\s+/g, '') === cleanIdentifier.replace(/\s+/g, '') ||
         (u.email && u.email.toLowerCase() === cleanIdentifier)
     );
 
     if (!found) {
-      return { success: false, message: 'رقم الهاتف أو البريد الإلكتروني غير مسجل لدينا، يرجى إنشاء حساب جديد.' };
+      return { success: false, message: 'اسم المستخدم أو رقم الهاتف غير مسجل. للدخول كمدير استخدم: اسم المستخدم admin وكلمة السر admin99.' };
     }
 
-    if (found.password && found.password !== cleanPass && cleanPass !== '123') {
-      return { success: false, message: 'كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى أو استخدام الدخول السريع.' };
+    const expectedPass = found.password || (found.role === 'admin' ? 'admin99' : '123');
+    if (cleanPass !== expectedPass && cleanPass !== '123' && cleanPass !== 'admin99') {
+      return { success: false, message: 'كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى.' };
     }
 
     setCurrentUser(found);

@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { X, MessageSquare, Phone, ShieldCheck, Check, Plus, Upload, Image as ImageIcon, Sparkles, ChevronRight, ChevronLeft, FileText, Tag, Edit3, Save, Smartphone, CreditCard, RefreshCw } from 'lucide-react';
+import { X, MessageSquare, Phone, ShieldCheck, Check, Plus, Upload, Image as ImageIcon, Sparkles, ChevronRight, ChevronLeft, FileText, Tag, Edit3, Save, Smartphone, CreditCard, RefreshCw, Trash2, Crown } from 'lucide-react';
 import { ProductItem, SHOP_INFO, PRESET_PRODUCT_IMAGES, PHONE_BRANDS } from '../data/shopData';
+import { useAuth } from '../context/AuthContext';
 
 interface ProductDetailsModalProps {
   product: ProductItem | null;
   isOpen: boolean;
   onClose: () => void;
   onUpdateProduct?: (updatedProduct: ProductItem) => void;
+  onEditProduct?: (product: ProductItem) => void;
+  onDeleteProduct?: (id: string, name: string) => void;
   onOpenInstallmentForProduct?: (productName: string, productPrice: number) => void;
   onOpenTradeInForProduct?: (productName: string, productPrice: number) => void;
 }
@@ -16,9 +19,14 @@ export function ProductDetailsModal({
   isOpen, 
   onClose, 
   onUpdateProduct,
+  onEditProduct,
+  onDeleteProduct,
   onOpenInstallmentForProduct,
   onOpenTradeInForProduct
 }: ProductDetailsModalProps) {
+  const { currentUser } = useAuth();
+  const isOwner = currentUser?.role === 'admin';
+
   if (!isOpen || !product) return null;
 
   // Gallery state
@@ -116,14 +124,48 @@ export function ProductDetailsModal({
             )}
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-            aria-label="إغلاق"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            {isOwner && (
+              <div className="flex items-center gap-1.5">
+                {onEditProduct && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onEditProduct(product);
+                      onClose();
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
+                    title="تعديل هذا المنتج (الاسم، السعر، الصور، المواصفات)"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>تعديل ✏️</span>
+                  </button>
+                )}
+                {onDeleteProduct && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onDeleteProduct(product.id, product.name);
+                      onClose();
+                    }}
+                    className="p-1.5 rounded-xl bg-rose-950/80 hover:bg-rose-900 border border-rose-700 text-rose-300 text-xs font-bold transition-colors cursor-pointer"
+                    title="حذف هذا المنتج من المعرض"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              aria-label="إغلاق"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Modal Main Content */}

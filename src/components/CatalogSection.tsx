@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Smartphone, Check, MessageSquare, Plus, Search, Trash2, ArrowUpDown, Sparkles, Headphones, Wrench, Eye, Images, X, Filter, Crown, Lock, CreditCard, RefreshCw } from 'lucide-react';
+import { Smartphone, Check, MessageSquare, Plus, Search, Trash2, ArrowUpDown, Sparkles, Headphones, Wrench, Eye, Images, X, Filter, Crown, Lock, CreditCard, RefreshCw, Edit3, LogOut, Zap, ShieldAlert } from 'lucide-react';
 import { ProductItem, SHOP_INFO, PHONE_BRANDS } from '../data/shopData';
 import { ProductDetailsModal } from './ProductDetailsModal';
+import { EditProductModal } from './EditProductModal';
 import { useAuth } from '../context/AuthContext';
 
-type FilterTabType = 'all' | 'phones' | 'accessories' | 'screens';
+type FilterTabType = 'all' | 'phones' | 'accessories';
 
 interface CatalogSectionProps {
   products: ProductItem[];
@@ -34,14 +35,16 @@ export function CatalogSection({
   activeBrandFilter,
   onSelectBrandFilter
 }: CatalogSectionProps) {
-  const { currentUser, openLogin } = useAuth();
+  const { currentUser, openLogin, logout } = useAuth();
   const isOwner = currentUser?.role === 'admin';
 
   const [activeTab, setActiveTab] = useState<FilterTabType>('all');
+  const [accessorySubFilter, setAccessorySubFilter] = useState<'all' | 'airpods' | 'gaming' | 'chargers' | 'coolers' | 'powerbanks'>('all');
   const [localBrandFilter, setLocalBrandFilter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'default' | 'price_asc' | 'price_desc'>('default');
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
 
   // Sync external brand filter if provided
   const currentBrandFilter = activeBrandFilter !== undefined ? activeBrandFilter : localBrandFilter;
@@ -56,41 +59,80 @@ export function CatalogSection({
     }
   };
 
+  const handleSelectTab = (tab: FilterTabType) => {
+    setActiveTab(tab);
+    if (tab !== 'phones') {
+      handleSetBrandFilter(null);
+    }
+    if (tab === 'accessories') {
+      setAccessorySubFilter('all');
+    }
+  };
+
   const activeBrandObj = PHONE_BRANDS.find((b) => b.id === currentBrandFilter);
 
-  // Filter products based on active tab, brand, and search query
+  // Filter products based on active tab, brand, accessory subfilter, and search query
   const filteredProducts = products.filter((product) => {
-    // If brand filter is active, only show phones matching that brand
-    if (currentBrandFilter) {
-      const isPhone = product.category === 'new_phones' || product.category === 'used_phones';
-      if (!isPhone) return false;
-
-      const brandObj = PHONE_BRANDS.find((b) => b.id === currentBrandFilter);
-      const brandEnglish = brandObj?.english?.toLowerCase() || currentBrandFilter.toLowerCase();
-      const brandArabicShort = brandObj ? brandObj.name.split(' ')[0] : '';
-
-      const matchesBrand =
-        product.brand === currentBrandFilter ||
-        (!product.brand &&
-          (product.name.toLowerCase().includes(brandEnglish) ||
-            product.name.includes(brandArabicShort) ||
-            (product.description && product.description.toLowerCase().includes(brandEnglish))));
-
-      if (!matchesBrand) {
+    // 1. Accessories Tab Filtering
+    if (activeTab === 'accessories') {
+      if (product.category !== 'accessories') {
         return false;
       }
+      if (accessorySubFilter !== 'all') {
+        const fullText = `${product.name} ${product.description || ''} ${product.categoryLabel} ${product.features.join(' ')}`.toLowerCase();
+        if (accessorySubFilter === 'airpods') {
+          const match = fullText.includes('إيربود') || fullText.includes('airpod') || fullText.includes('soundcore') || fullText.includes('anc') || fullText.includes('joyroom') || fullText.includes('لاسلكية');
+          if (!match) return false;
+        } else if (accessorySubFilter === 'gaming') {
+          const match = fullText.includes('جيمنج') || fullText.includes('gaming') || fullText.includes('zeus') || fullText.includes('onikuma') || fullText.includes('محيطي') || fullText.includes('ببجي') || fullText.includes('دراعات');
+          if (!match) return false;
+        } else if (accessorySubFilter === 'chargers') {
+          const match = fullText.includes('شاحن') || fullText.includes('شواحن') || fullText.includes('كابل') || fullText.includes('سلك') || fullText.includes('gan') || fullText.includes('pd');
+          if (!match) return false;
+        } else if (accessorySubFilter === 'coolers') {
+          const match = fullText.includes('مبرد') || fullText.includes('تبريد') || fullText.includes('cooler') || fullText.includes('مروحة');
+          if (!match) return false;
+        } else if (accessorySubFilter === 'powerbanks') {
+          const match = fullText.includes('باور بانك') || fullText.includes('بطارية') || fullText.includes('power bank');
+          if (!match) return false;
+        }
+      }
+    } else if (activeTab === 'phones') {
+      if (product.category !== 'new_phones') {
+        return false;
+      }
+      if (currentBrandFilter) {
+        const brandObj = PHONE_BRANDS.find((b) => b.id === currentBrandFilter);
+        const brandEnglish = brandObj?.english?.toLowerCase() || currentBrandFilter.toLowerCase();
+        const brandArabicShort = brandObj ? brandObj.name.split(' ')[0] : '';
+        const matchesBrand =
+          product.brand === currentBrandFilter ||
+          (!product.brand &&
+            (product.name.toLowerCase().includes(brandEnglish) ||
+              product.name.includes(brandArabicShort) ||
+              (product.description && product.description.toLowerCase().includes(brandEnglish))));
+        if (!matchesBrand) {
+          return false;
+        }
+      }
     } else {
-      // Normal Category filtering when no specific brand is locked
-      if (activeTab === 'phones') {
-        if (product.category !== 'new_phones' && product.category !== 'used_phones') {
-          return false;
-        }
-      } else if (activeTab === 'accessories') {
-        if (product.category !== 'accessories') {
-          return false;
-        }
-      } else if (activeTab === 'screens') {
-        if (product.category !== 'screens_parts') {
+      // 'all' Tab: if brand filter is set, show only phones of that brand
+      if (currentBrandFilter) {
+        const isPhone = product.category === 'new_phones';
+        if (!isPhone) return false;
+
+        const brandObj = PHONE_BRANDS.find((b) => b.id === currentBrandFilter);
+        const brandEnglish = brandObj?.english?.toLowerCase() || currentBrandFilter.toLowerCase();
+        const brandArabicShort = brandObj ? brandObj.name.split(' ')[0] : '';
+
+        const matchesBrand =
+          product.brand === currentBrandFilter ||
+          (!product.brand &&
+            (product.name.toLowerCase().includes(brandEnglish) ||
+              product.name.includes(brandArabicShort) ||
+              (product.description && product.description.toLowerCase().includes(brandEnglish))));
+
+        if (!matchesBrand) {
           return false;
         }
       }
@@ -121,9 +163,8 @@ export function CatalogSection({
   });
 
   // Calculate counts
-  const phonesCount = products.filter((p) => p.category === 'new_phones' || p.category === 'used_phones').length;
+  const phonesCount = products.filter((p) => p.category === 'new_phones').length;
   const accessoriesCount = products.filter((p) => p.category === 'accessories').length;
-  const screensCount = products.filter((p) => p.category === 'screens_parts').length;
 
   const handleWhatsAppProduct = (product: ProductItem, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -173,21 +214,33 @@ export function CatalogSection({
                 <span>لوحة تحكم صاحب المحل (أ. أسامة موسى)</span>
               </div>
               <h3 className="text-lg sm:text-2xl font-black text-white">
-                إضافة هاتف أو إكسسوار جديد للمعرض بالصور والأسعار
+                إدارة المعرض: إضافة وتعديل وحذف الهواتف والإكسسوارات
               </h3>
               <p className="text-xs sm:text-sm text-zinc-300">
-                بصفتك صاحب المحل، يمكنك إدراج هواتف جديدة أو مستعملة وتعديل أسعارها ووصفها ورفع صورها لتظهر للزبائن فوراً.
+                بصفتك صاحب المحل، يمكنك إدراج منتجات جديدة، تعديل الأسعار والصور، أو حذف أي منتج فوراً.
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={onOpenAddModal}
-              className="w-full md:w-auto px-6 py-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-sm sm:text-base shadow-xl shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all shrink-0 flex items-center justify-center gap-2.5 cursor-pointer ring-4 ring-amber-500/20"
-            >
-              <Plus className="w-6 h-6 stroke-[3]" />
-              <span>+ إضافة منتج جديد للمعرض</span>
-            </button>
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={onOpenAddModal}
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-zinc-950 font-black text-sm shadow-xl shadow-amber-500/40 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer ring-4 ring-amber-500/20"
+              >
+                <Plus className="w-5 h-5 stroke-[3]" />
+                <span>+ إضافة منتج جديد للمعرض</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={logout}
+                className="px-4 py-3.5 rounded-xl bg-zinc-950/80 hover:bg-rose-950/90 border border-zinc-700 hover:border-rose-600 text-zinc-300 hover:text-rose-200 font-bold text-xs transition-colors flex items-center gap-2 cursor-pointer shadow-md"
+                title="تسجيل الخروج من لوحة تحكم صاحب المحل"
+              >
+                <LogOut className="w-4 h-4 text-rose-400" />
+                <span>تسجيل خروج</span>
+              </button>
+            </div>
           </div>
         )}
 
@@ -218,8 +271,8 @@ export function CatalogSection({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => setActiveTab('all')}
-                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+                onClick={() => handleSelectTab('all')}
+                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'all'
                     ? 'bg-amber-500 text-zinc-950 font-black shadow-md shadow-amber-500/20'
                     : 'bg-zinc-950 text-zinc-300 border border-zinc-800 hover:border-zinc-700'
@@ -233,15 +286,15 @@ export function CatalogSection({
 
               <button
                 type="button"
-                onClick={() => setActiveTab('phones')}
-                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+                onClick={() => handleSelectTab('phones')}
+                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'phones'
                     ? 'bg-amber-500 text-zinc-950 font-black shadow-md shadow-amber-500/20'
                     : 'bg-zinc-950 text-zinc-300 border border-zinc-800 hover:border-zinc-700'
                 }`}
               >
                 <Smartphone className="w-4 h-4" />
-                <span>قائمة التلفونات</span>
+                <span>📱 قائمة التلفونات الجديدة</span>
                 <span className="text-[11px] px-1.5 py-0.2 rounded-full bg-black/20 font-mono">
                   {phonesCount}
                 </span>
@@ -249,33 +302,17 @@ export function CatalogSection({
 
               <button
                 type="button"
-                onClick={() => setActiveTab('accessories')}
-                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+                onClick={() => handleSelectTab('accessories')}
+                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeTab === 'accessories'
                     ? 'bg-amber-500 text-zinc-950 font-black shadow-md shadow-amber-500/20'
                     : 'bg-zinc-950 text-zinc-300 border border-zinc-800 hover:border-zinc-700'
                 }`}
               >
                 <Headphones className="w-4 h-4" />
-                <span>قائمة الإكسسوارات والمبردات</span>
+                <span>🎧 الإكسسوارات وجيمنج وإيربودز</span>
                 <span className="text-[11px] px-1.5 py-0.2 rounded-full bg-black/20 font-mono">
                   {accessoriesCount}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('screens')}
-                className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-1.5 ${
-                  activeTab === 'screens'
-                    ? 'bg-amber-500 text-zinc-950 font-black shadow-md shadow-amber-500/20'
-                    : 'bg-zinc-950 text-zinc-300 border border-zinc-800 hover:border-zinc-700'
-                }`}
-              >
-                <Wrench className="w-4 h-4" />
-                <span>شاشات وصيانة</span>
-                <span className="text-[11px] px-1.5 py-0.2 rounded-full bg-black/20 font-mono">
-                  {screensCount}
                 </span>
               </button>
             </div>
@@ -296,8 +333,57 @@ export function CatalogSection({
 
           </div>
 
-          {/* Dedicated Phone Brands Bar (خانة ماركات الهواتف - اختر الشركة المصنعة) */}
-          <div className="pt-3.5 pb-1 border-t border-zinc-800 space-y-2.5">
+          {/* Dedicated Accessories Sub-filters Bar (Shown ONLY when on accessories tab) */}
+          {activeTab === 'accessories' && (
+            <div className="pt-3.5 pb-1 border-t border-zinc-800 space-y-2.5 animate-in fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-amber-400 flex items-center gap-1.5 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
+                    <Headphones className="w-3.5 h-3.5" />
+                    <span>أقسام وتصنيفات الإكسسوارات والمستلزمات:</span>
+                  </span>
+                  <span className="text-[11px] text-zinc-400 hidden sm:inline">
+                    اختر القسم لفرز الإيربودز أو سماعات الجيمنج أو الشواحن أو المبردات
+                  </span>
+                </div>
+                <span className="text-[11px] font-bold text-amber-300 bg-zinc-950 px-2.5 py-1 rounded-lg border border-amber-500/30">
+                  {accessoriesCount} إكسسوار متوفر بالمحل
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {[
+                  { id: 'all', label: 'جميع الإكسسوارات', icon: '⚡' },
+                  { id: 'airpods', label: 'إيربودز وسماعات لاسلكية', icon: '🎧' },
+                  { id: 'gaming', label: 'سماعات ومستلزمات جيمنج', icon: '🎮' },
+                  { id: 'chargers', label: 'شواحن وكابلات GaN سريعة', icon: '🔌' },
+                  { id: 'coolers', label: 'مبردات هواتف ثلجية', icon: '❄️' },
+                  { id: 'powerbanks', label: 'باور بانك وبطاريات', icon: '🔋' }
+                ].map((item) => {
+                  const isSel = accessorySubFilter === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => setAccessorySubFilter(item.id as any)}
+                      className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+                        isSel
+                          ? 'bg-amber-400 text-zinc-950 font-black shadow-lg shadow-amber-500/20 ring-2 ring-amber-300'
+                          : 'bg-zinc-950 text-zinc-300 border border-zinc-800 hover:border-amber-500/40 hover:text-white'
+                      }`}
+                    >
+                      <span>{item.icon}</span>
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Dedicated Phone Brands Bar (Shown when on phones or all tabs) */}
+          {activeTab !== 'accessories' && (
+            <div className="pt-3.5 pb-1 border-t border-zinc-800 space-y-2.5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-black text-amber-400 flex items-center gap-1.5 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">
@@ -342,7 +428,7 @@ export function CatalogSection({
               {PHONE_BRANDS.map((brand) => {
                 const brandPhonesCount = products.filter(
                   (p) =>
-                    (p.category === 'new_phones' || p.category === 'used_phones') &&
+                    p.category === 'new_phones' &&
                     (p.brand === brand.id ||
                       (!p.brand &&
                         (p.name.toLowerCase().includes(brand.english?.toLowerCase() || '') ||
@@ -378,6 +464,7 @@ export function CatalogSection({
               })}
             </div>
           </div>
+        )}
 
           {/* Search Bar & Sort Controls */}
           <div className="pt-3 border-t border-zinc-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -560,19 +647,34 @@ export function CatalogSection({
                         </div>
                       )}
 
-                      {/* Delete button (Visible ONLY to Store Owner) */}
-                      {isOwner && product.isUserAdded && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onDeleteProduct(product.id, product.name);
-                          }}
-                          className="absolute top-3 left-3 p-1.5 rounded-lg bg-zinc-900/90 hover:bg-rose-600 text-zinc-300 hover:text-white transition-colors cursor-pointer"
-                          title="حذف هذا المنتج (صاحب المحل)"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                      {/* Store Owner Quick Management Actions (Edit & Delete on EVERY product) */}
+                      {isOwner && (
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5 z-20">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setEditingProduct(product);
+                            }}
+                            className="px-2.5 py-1.5 rounded-lg bg-zinc-950/90 hover:bg-amber-400 text-amber-400 hover:text-zinc-950 border border-amber-500/40 transition-all cursor-pointer shadow-md flex items-center gap-1 text-[11px] font-black"
+                            title="تعديل هذا المنتج (الاسم، السعر، الصور، الوصف)"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span>تعديل</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDeleteProduct(product.id, product.name);
+                            }}
+                            className="p-1.5 rounded-lg bg-zinc-950/90 hover:bg-rose-600 text-zinc-300 hover:text-white border border-rose-800/60 transition-colors cursor-pointer shadow-md"
+                            title="حذف هذا المنتج من المعرض نهائياً"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       )}
 
                       {/* Condition badge on bottom right over image */}
@@ -657,6 +759,21 @@ export function CatalogSection({
                       <MessageSquare className="w-3.5 h-3.5" />
                       <span>طلب أو استفسار عبر واتساب</span>
                     </button>
+
+                    {/* Dedicated Owner Quick Edit Action */}
+                    {isOwner && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingProduct(product);
+                        }}
+                        className="w-full flex items-center justify-center gap-1.5 py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-black text-xs transition-colors cursor-pointer"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-amber-400" />
+                        <span>تعديل بيانات المنتج (صاحب المحل) ✏️</span>
+                      </button>
+                    )}
                   </div>
 
                 </div>
@@ -713,8 +830,25 @@ export function CatalogSection({
         isOpen={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
         onUpdateProduct={handleUpdateCurrentProduct}
+        onEditProduct={(prod) => setEditingProduct(prod)}
+        onDeleteProduct={onDeleteProduct}
         onOpenInstallmentForProduct={onOpenInstallmentForProduct}
         onOpenTradeInForProduct={onOpenTradeInForProduct}
+      />
+
+      {/* Edit Product Modal for Store Owner */}
+      <EditProductModal
+        product={editingProduct}
+        isOpen={Boolean(editingProduct)}
+        onClose={() => setEditingProduct(null)}
+        onSaveProduct={(updated) => {
+          handleUpdateCurrentProduct(updated);
+          setEditingProduct(null);
+        }}
+        onDeleteProduct={(id, name) => {
+          onDeleteProduct(id, name);
+          setEditingProduct(null);
+        }}
       />
     </section>
   );

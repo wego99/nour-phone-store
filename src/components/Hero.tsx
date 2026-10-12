@@ -55,7 +55,7 @@ export function Hero({ onOpenAddModal }: HeroProps) {
 
             {/* Subtitle / Description */}
             <p className="text-base sm:text-lg text-zinc-300 leading-relaxed max-w-2xl font-normal">
-              نوفر لك أحدث <strong className="text-white">الهواتف الذكية</strong> (جديد ومستعمل بالضمان كاش وبتقسيط مريح)، <strong className="text-white">الإكسسوارات الأصلية</strong> والمبردات، <strong className="text-white">تركيب شاشات الموبايل والباغات</strong> بأعلى دقة، وخدمات <strong className="text-white">السوفت وير والشحن الفوري</strong>.
+              نوفر لك أحدث <strong className="text-white">الهواتف الذكية الجديدة بالضمان</strong> (كاش وبتقسيط مريح)، <strong className="text-white">الإكسسوارات وسماعات الجيمنج والإيربودز</strong>، خدمات <strong className="text-white">سداد جميع ضرائب ورسوم الأجهزة لدى الجهاز القومي لتنظيم الاتصالات (NTRA)</strong>، و<strong className="text-white">دفع الفواتير وشحن الرصيد والمحافظ الإلكترونية</strong>.
             </p>
 
             {/* Key Location Callout */}
@@ -98,8 +98,8 @@ export function Hero({ onOpenAddModal }: HeroProps) {
                 href="#repair-estimator"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-zinc-200 text-sm font-bold transition-colors"
               >
-                <Wrench className="w-4 h-4 text-amber-400" />
-                <span>استعلام تكلفة الصيانة والشاشات</span>
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                <span>سداد ضريبة NTRA ودفع الفواتير</span>
                 <ArrowLeft className="w-4 h-4 text-zinc-400" />
               </a>
 
@@ -172,7 +172,7 @@ export function Hero({ onOpenAddModal }: HeroProps) {
                       </div>
                       <div>
                         <p className="text-xs text-zinc-400">الهواتف والأجهزة</p>
-                        <p className="text-sm font-bold text-zinc-100">جديد ومستعمل بالضمان</p>
+                        <p className="text-sm font-bold text-zinc-100">جديد بالضمان الرسمي</p>
                       </div>
                     </div>
                     <span className="text-xs font-semibold text-amber-400">كاش & تقسيط</span>
@@ -181,14 +181,14 @@ export function Hero({ onOpenAddModal }: HeroProps) {
                   <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-950/70 border border-zinc-850">
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-lg bg-amber-500/15 text-amber-400">
-                        <Wrench className="w-4 h-4" />
+                        <ShieldCheck className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs text-zinc-400">شاشات الموبايل والباغات</p>
-                        <p className="text-sm font-bold text-zinc-100">تركيب احترافي بمكابس ليزر</p>
+                        <p className="text-xs text-zinc-400">ضريبة أجهزة NTRA والفواتير</p>
+                        <p className="text-sm font-bold text-zinc-100">سداد فوري وتسجيل رسمي</p>
                       </div>
                     </div>
-                    <span className="text-xs font-semibold text-emerald-400">ضمان كتابي</span>
+                    <span className="text-xs font-semibold text-emerald-400">إيصال معتمد</span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-950/70 border border-zinc-850">
@@ -197,7 +197,7 @@ export function Hero({ onOpenAddModal }: HeroProps) {
                         <Sparkles className="w-4 h-4" />
                       </div>
                       <div>
-                        <p className="text-xs text-zinc-400">الإكسسوارات ومبردات الجيمنج</p>
+                        <p className="text-xs text-zinc-400">الإكسسوارات وجيمنج وإيربودز</p>
                         <p className="text-sm font-bold text-zinc-100">شواحن وسماعات ومبردات هواتف</p>
                       </div>
                     </div>
